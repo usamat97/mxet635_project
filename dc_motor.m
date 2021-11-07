@@ -1,53 +1,50 @@
 clear;
 close all;
-V_min = 6;
-V_max = 24;
-V = 12;
+V_min = 11;
+V_max = 12;
 K = 0.03; 
 L = 1.2*10^-4;
 J = 1.0*10^-5;
 R = 0.2;
 T_f = 0.09;
 T_l_min = 0;
-T_l_max = 2;
-i = 1;
+T_l_max = 3;
+T_l_range = T_l_min:0.01:T_l_max;
+j = 1;
+N = size(T_l_range);
 
-for T_l = T_l_min:0.1:T_l_max
-    output = sim('motor_current_speed', [0:0.0001:0.02]);
-    t = output.tout;
-    current = output.yout{1}.Values.Data;
-    speed = output.yout{2}.Values.Data;
-    figure(1)
-    yyaxis left;
-    plot(t,current);
-    yyaxis right;
-    plot(t,speed);
+for V = V_min:V_max
+    for i = 1:N(:,2)
+        T_l = T_l_range(1,i);
+        output = sim('motor_current_speed', [0:0.0001:0.02]);
+        t = output.tout;
+        current = output.yout{1}.Values.Data;
+        speed = output.yout{2}.Values.Data;
+        figure(1)
+        yyaxis left;
+        plot(t,current);
+        yyaxis right;
+        plot(t,speed);
 
-    %estimate value of 't' for which steady state is reached
-    %and store the corresponding index at which it occurs in
-    %the variable 'ss_index'
-    ss_init = 0.01;
-    ss_increment = 0.001;
-    for ss_init=ss_init:ss_increment:0.1
-        ss_index = find(t==ss_init);
-        ss_inc = find(t==(ss_init + ss_increment));
-        if isempty(current(ss_inc))
-            fprintf('[T_load=%f] steady state reached at t=%f\n', T_l, ss_init)
+        current_SS(j, i) = current(length(current),1);
+        speed_SS(j, i) = speed(length(speed),1);
+        if (speed_SS(j, i) <= 0)
             break
         end
     end
-    
-    current_SS(i) = current(ss_index);
-    speed_SS(i) = speed(ss_index);
-    if (speed_SS(i) <= 0)
-        break
-    end
-    i = i+1;
-    torque(i) = T_l;
+    figure(2)
+    hold on;
+    plot(T_l_range(1,1:i), current_SS(j,:))
+    title('Current vs Torque');
+    xlabel('T (N/m)');
+    ylabel('I (A)');
+    figure(3)
+    hold on;
+    plot(T_l_range(1,1:i), speed_SS(j,:))
+    title('Speed vs Torque');
+    xlabel('T (N/m)');
+    ylabel('w (rpm)');
+    j = j+1;
 end
-figure(2)
-plot(torque, current_SS)
-figure(3)
-plot(torque, speed_SS)
 
 
