@@ -1,8 +1,8 @@
 clear;
 close all;
-V_min = 0;
+V_min = 6;
 V_max = 24;
-V = 0;
+V = 12;
 K = 0.03; 
 L = 1.2*10^-4;
 J = 1.0*10^-5;
@@ -36,7 +36,7 @@ for T_l = T_l_min:0.1:T_l_max
             break
         end
     end
-
+    
     current_SS(i) = current(ss_index);
     speed_SS(i) = speed(ss_index);
     if (speed_SS(i) <= 0)
