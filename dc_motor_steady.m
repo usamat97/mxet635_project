@@ -13,6 +13,9 @@ T_l_range = T_l_min:0.01:T_l_max;
 j = 1;
 N = size(T_l_range);
 
+period = 30;
+duty_cycle = 99;
+
 for V = V_min:V_max
     for i = 1:N(:,2)
         T_l = T_l_range(1,i);
