@@ -14,31 +14,38 @@ T_l = 0.1;
 T_l_min = 0;
 T_l_max = 3;
 T_l_range = T_l_min:0.01:T_l_max;
-N = size(T_l_min:0.01:T_l_max); 
+N = size(T_l_range); 
+V_min = 12;
+V_max = 13;
+V_range = V_min:0.5:V_max;
+M = size(V_range); 
 
-for i = 1:N(:,2)
-    T_l = T_l_range(1,i);
-    output = sim('motor_current_speed', [0:0.0001:1.2]);
-    t = output.tout;
-    current = output.yout{1}.Values.Data;
-    speed = output.yout{2}.Values.Data;
-    current_SS(1, i) = mean(current(length(current)-frequency : length(current), 1));
-    speed_SS(1, i) = mean(speed(length(speed)-frequency : length(speed), 1));
-    if (speed_SS(1, i) <= 0)
-        break
+for j = 1:M(:,2)
+    V = V_range(1,j);
+    for i = 1:N(:,2)
+        T_l = T_l_range(1,i);
+        output = sim('motor_current_speed', [0:0.0001:1.2]);
+        t = output.tout;
+        current = output.yout{1}.Values.Data;
+        speed = output.yout{2}.Values.Data;
+        current_SS(j, i) = mean(current(length(current)-frequency : length(current), 1));
+        speed_SS(j, i) = mean(speed(length(speed)-frequency : length(speed), 1));
+        if (speed_SS(j, i) <= 0)
+            break
+        end
     end
+    figure(1)
+    hold on;
+    plot(T_l_range(1,1:i), current_SS(j,:))
+    title('Current vs Torque');
+    xlabel('T (N/m)');
+    ylabel('I (A)');
+    figure(2)
+    hold on;
+    plot(T_l_range(1,1:i), speed_SS(j,:))
+    title('Speed vs Torque');
+    xlabel('T (N/m)');
+    ylabel('w (rpm)');
 end
-figure(1)
-hold on;
-plot(T_l_range(1,1:i), current_SS(1,:))
-title('Current vs Torque');
-xlabel('T (N/m)');
-ylabel('I (A)');
-figure(2)
-hold on;
-plot(T_l_range(1,1:i), speed_SS(1,:))
-title('Speed vs Torque');
-xlabel('T (N/m)');
-ylabel('w (rpm)');
 
 
