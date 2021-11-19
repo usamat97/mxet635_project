@@ -2,8 +2,8 @@ clear;
 close all;
 V = 12;
 K = 0.277; 
-L = 0.2*10^-7;
-J = 3.5;
+L = 0.2*10^-4;
+J = 1.0*10^-5;
 R = 1.77;
 T_f = 0.005;
 T_l_min = 0;
@@ -17,7 +17,7 @@ duty_cycle = 99;
 
 for i = 1:N(:,2)
     T_l = T_l_range(1,i);
-    output = sim('motor_current_speed', [0:1:600]);
+    output = sim('motor_current_speed', [0:0.000001:0.003]);
     t = output.tout;
     current = output.yout{1}.Values.Data;
     speed = output.yout{2}.Values.Data;
@@ -57,4 +57,4 @@ fprintf('stalled torque (> 1.75126 Nm) : %f Nm\n', T_l_range(1,i));
 fprintf('no-load speed (> 260 rpm): %f rpm\n', speed_SS(1,1));
 fprintf('no-load current (< 0.3 A): %f A\n', current_SS(1,1));
 fprintf('stalled current (< 7.0 A): %f A\n', current_SS(1,i));
-fprintf('maximum efficiency (< 44 pc): %f pc\n', max(efficiency));
+fprintf('maximum efficiency (> 44 pc): %f pc\n', max(efficiency));
