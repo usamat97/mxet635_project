@@ -32,9 +32,12 @@ for j = 1:2
         current = output.yout{1}.Values.Data;
         speed = output.yout{2}.Values.Data;
         if j == 1
-            current_SS(1, i) = mean(current(length(current)-frequency : length(current), 1));
-            speed_SS(1, i) = mean(speed(length(speed)-frequency : length(speed), 1));
+            t_steady_state_range = (t >= 1) & (t <= 1.2);
+            current_SS(1, i) = mean(current(t_steady_state_range));
+            speed_SS(1, i) = mean(speed(t_steady_state_range));
         else
+            figure(1)
+            plot(t,speed)
             current_SS(1, i) = current(length(current),1);
             speed_SS(1, i) = speed(length(speed),1);
         end
@@ -42,13 +45,13 @@ for j = 1:2
             break
         end
     end
-    figure(1)
+    figure(2)
     hold on;
     plot(T_l_range(1,1:i), current_SS(1,:))
     title('Current vs Torque');
     xlabel('T (Nm)');
     ylabel('I (A)');
-    figure(2)
+    figure(3)
     hold on;
     plot(T_l_range(1,1:i), speed_SS(1,:))
     title('Speed vs Torque');

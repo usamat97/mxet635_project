@@ -8,66 +8,184 @@ R_0 = 0.1;
 T_f_0 = 0.07;
 V_0 = 12;
 duty_cycle_0 = 20; %percentage
+T_l_0 = 0.3;
+error_duty_cycle = 0.25;
+error_T_l = 0.15;
+error_V = 0.375;
 error = 0.2;
-val = [K_0, L_0, J_0, R_0, T_f_0, V_0, duty_cycle_0];
+
+val = [K_0, L_0, J_0, R_0, T_f_0, T_l_0, duty_cycle_0, V_0];
+err = [error, error, error, error, error, error_T_l, error_duty_cycle, error_V];
 [M,N] = size(val);
-% error = [error_M0, error_B0, error_K0];
+
 frequency = 200; %hertz
 period = 1/frequency;
 
-param_matrix = zeros([2^(N-3),N]); %1/8 design
+param_matrix = zeros([2^(N-1),N]); 
 
 DOE_matrix = [
-    -1	-1	1	1	1	-1	-1
-    1	1	1	1	1	1	1
-    1	-1	1	1	-1	-1	1
-    1	1	1	-1	1	-1	-1
-    -1	1	-1	1	1	-1	1
-    1	-1	-1	-1	1	-1	1
-    -1	1	1	-1	-1	-1	1
-    1	-1	-1	1	1	1	-1
-    -1	-1	-1	-1	-1	-1	-1
-    1	-1	1	-1	-1	1	-1
-    -1	1	-1	-1	1	1	-1
-    -1	-1	1	-1	1	1	1
-    -1	1	1	1	-1	1	-1
-    1	1	-1	1	-1	-1	-1
-    1	1	-1	-1	-1	1	1
-    -1	-1	-1	1	-1	1	1
+    1	1	-1	1	1	1	-1	1
+    1	1	1	-1	1	-1	-1	-1
+    1	-1	1	-1	1	1	1	1
+    1	1	1	-1	1	1	-1	1
+    -1	-1	-1	-1	-1	-1	1	1
+    -1	1	-1	-1	1	-1	1	1
+    -1	1	-1	-1	1	-1	-1	-1
+    1	-1	1	1	-1	1	1	1
+    -1	-1	-1	-1	1	1	-1	-1
+    1	1	1	1	-1	-1	-1	-1
+    -1	-1	-1	1	1	1	-1	1
+    1	1	1	-1	-1	-1	1	-1
+    -1	1	1	1	1	-1	1	1
+    1	1	-1	1	1	1	1	-1
+    1	1	1	1	1	1	1	1
+    1	-1	1	-1	-1	1	1	-1
+    -1	-1	1	1	1	-1	-1	1
+    -1	1	1	1	-1	1	1	1
+    1	1	1	1	-1	1	-1	1
+    1	1	-1	1	-1	-1	-1	1
+    -1	1	-1	-1	-1	1	1	1
+    -1	1	1	1	1	-1	-1	-1
+    -1	1	1	1	-1	-1	-1	1
+    -1	-1	-1	-1	-1	-1	-1	-1
+    1	1	1	1	-1	-1	1	1
+    1	1	1	-1	1	1	1	-1
+    -1	-1	1	1	-1	1	-1	1
+    1	1	1	-1	-1	-1	-1	1
+    -1	1	-1	1	-1	-1	1	1
+    1	-1	-1	-1	1	-1	-1	-1
+    1	1	-1	-1	1	1	-1	-1
+    -1	-1	1	-1	1	-1	-1	-1
+    1	-1	-1	-1	1	1	1	-1
+    -1	-1	1	-1	-1	-1	-1	1
+    1	-1	1	1	1	1	-1	1
+    -1	1	1	-1	-1	-1	1	1
+    1	-1	-1	1	-1	-1	1	1
+    -1	1	-1	1	1	-1	1	-1
+    1	-1	-1	1	-1	1	-1	1
+    1	-1	-1	-1	-1	-1	-1	1
+    -1	-1	1	-1	1	1	-1	1
+    -1	-1	1	1	-1	-1	1	1
+    -1	1	-1	1	-1	-1	-1	-1
+    1	1	1	-1	-1	1	1	1
+    -1	-1	1	1	1	-1	1	-1
+    -1	1	1	1	-1	-1	1	-1
+    1	-1	1	1	-1	-1	1	-1
+    -1	1	1	-1	-1	1	-1	1
+    -1	1	-1	1	1	1	1	1
+    1	-1	1	-1	1	1	-1	-1
+    1	-1	1	1	1	-1	-1	-1
+    1	-1	-1	-1	-1	1	-1	-1
+    -1	-1	-1	-1	-1	1	-1	1
+    -1	1	1	-1	-1	1	1	-1
+    1	-1	1	1	1	1	1	-1
+    -1	1	-1	1	1	-1	-1	1
+    -1	-1	-1	-1	1	-1	1	-1
+    1	-1	-1	-1	-1	1	1	1
+    -1	1	1	1	1	1	-1	1
+    1	-1	1	-1	-1	-1	-1	-1
+    1	-1	-1	1	1	-1	-1	1
+    -1	-1	1	1	-1	-1	-1	-1
+    -1	1	-1	-1	1	1	-1	1
+    1	1	1	1	1	-1	1	-1
+    -1	-1	-1	-1	-1	1	1	-1
+    1	-1	1	1	-1	-1	-1	1
+    1	1	-1	-1	-1	1	-1	1
+    -1	1	1	-1	1	-1	-1	1
+    -1	-1	-1	-1	1	1	1	1
+    1	1	1	1	1	-1	-1	1
+    -1	1	1	1	1	1	1	-1
+    1	-1	-1	1	1	1	-1	-1
+    1	-1	-1	-1	1	1	-1	1
+    1	-1	-1	1	1	-1	1	-1
+    -1	-1	1	1	1	1	1	1
+    -1	-1	-1	1	1	1	1	-1
+    1	1	-1	-1	1	-1	-1	1
+    -1	-1	-1	1	-1	-1	-1	1
+    1	-1	1	-1	1	-1	-1	1
+    1	1	1	-1	-1	1	-1	-1
+    1	1	-1	-1	-1	-1	1	1
+    1	1	1	1	-1	1	1	-1
+    -1	-1	1	-1	-1	1	1	1
+    -1	1	-1	-1	-1	-1	-1	1
+    1	-1	-1	1	-1	1	1	-1
+    1	-1	-1	-1	1	-1	1	1
+    -1	1	1	-1	-1	-1	-1	-1
+    -1	-1	-1	1	-1	1	-1	-1
+    1	1	-1	1	-1	-1	1	-1
+    1	1	-1	-1	1	1	1	1
+    1	1	-1	1	1	-1	1	1
+    1	1	1	-1	1	-1	1	1
+    1	1	-1	-1	-1	-1	-1	-1
+    1	-1	1	-1	1	-1	1	-1
+    -1	1	-1	1	-1	1	-1	1
+    1	1	-1	-1	1	-1	1	-1
+    -1	1	-1	-1	-1	-1	1	-1
+    1	1	-1	1	1	-1	-1	-1
+    1	-1	-1	1	1	1	1	1
+    1	-1	1	-1	-1	-1	1	1
+    -1	-1	1	-1	1	1	1	-1
+    -1	-1	-1	-1	1	-1	-1	1
+    -1	-1	1	-1	-1	-1	1	-1
+    -1	1	-1	1	-1	1	1	-1
+    -1	1	1	1	-1	1	-1	-1
+    1	-1	1	-1	-1	1	-1	1
+    -1	1	-1	-1	-1	1	-1	-1
+    -1	-1	-1	1	1	-1	1	1
+    1	-1	-1	-1	-1	-1	1	-1
+    -1	-1	-1	1	1	-1	-1	-1
+    -1	-1	-1	1	-1	-1	1	-1
+    -1	1	1	-1	1	1	-1	-1
+    1	-1	-1	1	-1	-1	-1	-1
+    -1	-1	1	-1	-1	1	-1	-1
+    1	1	-1	1	-1	1	1	1
+    -1	-1	1	1	-1	1	1	-1
+    -1	1	-1	1	1	1	-1	-1
+    -1	1	1	-1	1	-1	1	-1
+    1	-1	1	1	1	-1	1	1
+    1	1	-1	1	-1	1	-1	-1
+    1	-1	1	1	-1	1	-1	-1
+    -1	-1	1	-1	1	-1	1	1
+    -1	1	-1	-1	1	1	1	-1
+    -1	-1	1	1	1	1	-1	-1
+    -1	-1	-1	1	-1	1	1	1
+    1	1	-1	-1	-1	1	1	-1
+    1	1	1	1	1	1	-1	-1
+    -1	1	1	-1	1	1	1	1
  ];
 
 for i=1:N
-    for j=1:2^(N-3)
+    for j=1:2^(N-1)
         if (DOE_matrix(j,i)==1)
-            param_matrix(j,i)= val(i) + val(i)*error;
+            param_matrix(j,i)= val(i) + val(i)*err(i);
         else
-            param_matrix(j,i)= val(i) - val(i)*error;
+            param_matrix(j,i)= val(i) - val(i)*err(i);
         end
     end
 end
 
 
-for i=1:2^(N-3)
+for i=1:2^(N-1)
     K = param_matrix(i,1); 
     L = param_matrix(i,2);
     J = param_matrix(i,3);
     R = param_matrix(i,4);
     T_f = param_matrix(i,5);
-    V = param_matrix(i,6);
-    duty_cycle = param_matrix(i,7); %percentage
+    T_l = param_matrix(i,6);
+    duty_cycle = param_matrix(i,7);
+    V = param_matrix(i,8);
     
-    T_l_range = 0:0.01:3;
-    sz_T_l = size(T_l_range);
-    for j = 1:sz_T_l(:,2)
-        T_l = T_l_range(1,j);
-        output = sim('motor_current_speed', [0:0.001:1.2]);
-        t = output.tout;
-        current = output.yout{1}.Values.Data;
-        speed = output.yout{2}.Values.Data;
-%         current_SS(1, j) = mean(current(length(current)-frequency : length(current), 1))
-        speed_SS(i, j) = mean(speed(length(speed)-frequency : length(speed), 1));
-        if (speed_SS(i, j) <= 0)
-            break
-        end
-    end
+    output = sim('motor_current_speed', [0:0.001:0.8]);
+    t = output.tout;
+    current = output.yout{1}.Values.Data;
+    speed = output.yout{2}.Values.Data;
+    
+%     current_SS(1, i) = current(length(current),1); %incorrect
+%     speed_SS(1, i) = speed(length(speed),1); %incorrect
+    
+    t_steady_state_range = (t >= 0.7) & (t <= 0.8);
+    current_SS(1, i) = mean(current(t_steady_state_range));
+    speed_SS(1, i) = mean(speed(t_steady_state_range));
+
+    efficiency(i, 1) = 100*(T_l*speed_SS(1, i)/9.5493)/(V*current_SS(1, i));   
 end
