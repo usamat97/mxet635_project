@@ -1,0 +1,32 @@
+>> idtf(tf)
+
+ans =
+ 
+  From input "u1" to output...
+                  8.829e11 s + 1.926e13
+   y1:  ------------------------------------------
+        s^3 + 7.453e06 s^2 + 6.914e11 s + 2.994e15
+ 
+                  -1.094e08 s + 1.462e11
+   y2:  ------------------------------------------
+        s^3 + 2.195e04 s^2 + 1.407e08 s + 1.524e11
+ 
+  From input "u2" to output...
+                  -6.827e12 s + 6.027e15
+   y1:  ------------------------------------------
+        s^3 + 4.143e06 s^2 + 3.985e11 s + 1.726e15
+ 
+                         s + 1166
+   y2:  ------------------------------------------
+        s^3 + 6.329e04 s^2 + 3.497e08 s + 3.385e11
+ 
+Name: tf1
+Continuous-time identified transfer function.
+
+Parameterization:
+   Number of poles: [3 3;3 3]   Number of zeros: [1 1;1 1]
+   Number of free coefficients: 20
+   Use "tfdata", "getpvec", "getcov" for parameters and their uncertainties.
+
+Status:                         
+Model modified after estimation.
