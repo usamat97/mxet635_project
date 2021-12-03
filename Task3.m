@@ -1,12 +1,12 @@
 clear;
 close all;
 
-K = 0.02; 
-L = 1.0*10^-4;
-J = 9.025*10^-5;
-R = 0.1;
-T_f = 0.07;
 V = 12;
+K = 0.397; 
+L = 0.2*10^-4;
+J = 1.3*10^-5;
+R = 1.77;
+T_f = 0.115;
 % duty_cycle = 50; %percentage
 % frequency = 200; %hertz
 % period = 1/frequency;
@@ -18,7 +18,7 @@ N = size(T_l_range);
 for j = 1:2
     if j == 1
         duty_cycle = 50;
-        frequency = 200;
+        frequency = 900;
         period = 1/frequency;
     else
         duty_cycle = 99;
@@ -27,16 +27,18 @@ for j = 1:2
     end
     for i = 1:N(:,2)
         T_l = T_l_range(1,i);
-        output = sim('motor_current_speed', [0:0.0001:1.2]);
+        output = sim('motor_current_speed', [0:0.00001:0.05]);
         t = output.tout;
         current = output.yout{1}.Values.Data;
         speed = output.yout{2}.Values.Data;
         if j == 1
-            t_steady_state_range = (t >= 1) & (t <= 1.2);
+            figure(1)
+            plot(t,speed)
+            t_steady_state_range = (t >= (0.05 - period)) & (t <= 0.05);
             current_SS(1, i) = mean(current(t_steady_state_range));
             speed_SS(1, i) = mean(speed(t_steady_state_range));
         else
-            figure(1)
+            figure(2)
             plot(t,speed)
             current_SS(1, i) = current(length(current),1);
             speed_SS(1, i) = speed(length(speed),1);
@@ -45,16 +47,22 @@ for j = 1:2
             break
         end
     end
-    figure(2)
+    figure(3)
     hold on;
     plot(T_l_range(1,1:i), current_SS(1,:))
     title('Current vs Torque');
     xlabel('T (Nm)');
     ylabel('I (A)');
-    figure(3)
+    if j == 2
+        legend('PWM','Constant Voltage')
+    end
+    figure(4)
     hold on;
     plot(T_l_range(1,1:i), speed_SS(1,:))
     title('Speed vs Torque');
     xlabel('T (Nm)');
     ylabel('w (rpm)');
+    if j == 2
+        legend('PWM','Constant Voltage')
+    end
 end

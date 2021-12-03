@@ -28,19 +28,21 @@ for j = 1:M(:,2)
         t = output.tout;
         current = output.yout{1}.Values.Data;
         speed = output.yout{2}.Values.Data;
+        figure(1)
+        plot(t,speed)
         current_SS(j, i) = mean(current(length(current)-frequency : length(current), 1));
         speed_SS(j, i) = mean(speed(length(speed)-frequency : length(speed), 1));
         if (speed_SS(j, i) <= 0)
             break
         end
     end
-    figure(1)
+    figure(2)
     hold on;
     plot(T_l_range(1,1:i), current_SS(j,:))
     title('Current vs Torque');
     xlabel('T (N/m)');
     ylabel('I (A)');
-    figure(2)
+    figure(3)
     hold on;
     plot(T_l_range(1,1:i), speed_SS(j,:))
     title('Speed vs Torque');
