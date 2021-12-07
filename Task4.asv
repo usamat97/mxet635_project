@@ -12,6 +12,14 @@ V_max = 16;
 V_min = 10;
 period = 1/20;
 
+% • Resistance: lognormal;
+% • Inductance: lognormal; 
+% • Inertia: lognormal; 
+% • Torque (Back emf) gain: lognormal;
+% • Load: from 0.05 Nm to 0.2 Nm, uniform distribution;
+% • Battery voltage: from 10 v to 16 v; uniform distribution;
+% • Duty cycle: 20%;
+
 std_params = 0.1;
 half_std = 0;
 i=1;
@@ -68,19 +76,19 @@ std_efficiency = std(efficiency);
 if i == 1
     half_std = std_efficiency/2;
 end
+%now reduce this std of efficiency by 50%
 Cost = 4 * 1/std_params + 1/(T_l_max-T_l_min) + 1/(V_max-V_min);
 RESULT(i,1) = std_params;
 RESULT(i,2) = Cost;
 RESULT(i,3) = std_efficiency;
+std_params
 i = i+1;
 std_params = std_params - 0.01;
 end
-
 % • RESULT is n x 3 matrix
-% • with coloumns --> std dev of params | Cost | std dev of efficiency
-% • RESULT(:,3) < half_std --> will return all indices where std dev of max 
-%   efficiency has been reduced by 50%
-
+% • with coloumns: std_params 
+% • RESULT is n x 3 matrix
+% • RESULT is n x 3 matrix
 chk = RESULT(:,3) < half_std;
 idx_min = find(RESULT(:,2) == min(RESULT(chk,2)));
-RESULT(idx_min,:) % desired row with std(max_efficiency) < 50pc AND min Cost
+RESULT(idx_min,:) %desired row with std(max_efficiency) < 50pc AND min Cost
