@@ -3,9 +3,9 @@ close all;
 V = 12;
 K = 0.397; 
 L = 0.2*10^-4;
-J = 1.3*10^-5;
+J = 0.0353077;
 R = 1.77;
-T_f = 0.115;
+T_f = 0.119;
 T_l_min = 0.05;
 T_l_max = 0.2;
 V_max = 16;
@@ -44,7 +44,7 @@ while std_params >= 0.0100
         duty_cycle = y(j,6);
         for k = 1:N(:,2)
             T_l = T_l_range(1,k);
-            output = sim('motor_current_speed', [0:0.0001:0.002]);
+            output = sim('motor_current_speed', [0:0.01:12]);
             t = output.tout;
             current = output.yout{1}.Values.Data;
             speed = output.yout{2}.Values.Data;
@@ -54,7 +54,7 @@ while std_params >= 0.0100
             yyaxis right;
             plot(t,speed);
 
-            t_steady_state_range = (t >= 0.001) & (t <= 0.002);
+            t_steady_state_range = (t >= (12 - period)) & (t <= 12);
             current_SS(1, j) = mean(current(t_steady_state_range));
             speed_SS(1, j) = mean(speed(t_steady_state_range));
             efficiency(1, j) = 100*(T_l*speed_SS(1, j)/9.5493)/(V*current_SS(1, j));

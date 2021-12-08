@@ -1,14 +1,15 @@
-Hs = struct([]);
-% Hs(1).num = [1,-5];
-% Hs(1).den = [1,3453,534535];
-% Hs(2).num = [1,878,34633];
-% Hs(2).den = [1,453535];
 
-Hs(3).num = [1,-5];
-Hs(3).den = [1,4545,454534];
-Hs(4).num = [1,-5,4];
-Hs(4).den = [1,95, 545];
+T_l_min = 0.05;
+T_l_max = 0.2;
+T_l_range = T_l_min:0.01:T_l_max;
+N = size(T_l_range);
 
-Hs(4)=0;
+(T_l_max - T_l_min) * 0.1
+(T_l_max - T_l_min) * 0.09
+(T_l_max - T_l_min) * 0.08
+(T_l_max - T_l_min) * 0.07
 
-Hs
+T_l_max = T_l_max *(1-0.09)
+T_l_min = T_l_min *(1+0.09)
+T_l_max
+T_l_min

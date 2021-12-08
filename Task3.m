@@ -4,9 +4,9 @@ close all;
 V = 12;
 K = 0.397; 
 L = 0.2*10^-4;
-J = 1.3*10^-5;
+J = 0.0353077;
 R = 1.77;
-T_f = 0.115;
+T_f = 0.119;
 % duty_cycle = 50; %percentage
 % frequency = 200; %hertz
 % period = 1/frequency;
@@ -18,30 +18,37 @@ N = size(T_l_range);
 for j = 1:2
     if j == 1
         duty_cycle = 50;
-        frequency = 900;
+        frequency = 20;
         period = 1/frequency;
     else
         duty_cycle = 99;
-        frequency = 0.2;
+        frequency = 0.0002;
         period = 1/frequency;
     end
     for i = 1:N(:,2)
         T_l = T_l_range(1,i);
-        output = sim('motor_current_speed', [0:0.00001:0.05]);
+        output = sim('motor_current_speed', [0:0.01:7]);
         t = output.tout;
         current = output.yout{1}.Values.Data;
         speed = output.yout{2}.Values.Data;
         if j == 1
             figure(1)
-            plot(t,speed)
-            t_steady_state_range = (t >= (0.05 - period)) & (t <= 0.05);
+            yyaxis left;
+            plot(t,current);
+            yyaxis right;
+            plot(t,speed);
+            t_steady_state_range = (t >= (7 - period)) & (t <= 7);
             current_SS(1, i) = mean(current(t_steady_state_range));
             speed_SS(1, i) = mean(speed(t_steady_state_range));
         else
             figure(2)
-            plot(t,speed)
+            yyaxis left;
+            plot(t,current);
+            yyaxis right;
+            plot(t,speed);
             current_SS(1, i) = current(length(current),1);
             speed_SS(1, i) = speed(length(speed),1);
+            
         end
         if (speed_SS(1, i) <= 0)
             break

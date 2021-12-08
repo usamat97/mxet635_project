@@ -3,21 +3,21 @@ close all;
 V = 12;
 K = 0.397; 
 L = 0.2*10^-4;
-J = 1.3*10^-5;
+J = 0.0353077;
 R = 1.77;
-T_f = 0.115;
+T_f = 0.119;
 T_l_min = 0;
 T_l_max = 3;
 T_l_range = T_l_min:0.01:T_l_max;
 N = size(T_l_range);
 
-period = 1700;
+period = 1700; % very large
 duty_cycle = 99;
 
 
 for i = 1:N(:,2)
     T_l = T_l_range(1,i);
-    output = sim('motor_current_speed', [0:0.000001:0.002]);
+    output = sim('motor_current_speed', [0:0.01:7]);
     t = output.tout;
     current = output.yout{1}.Values.Data;
     speed = output.yout{2}.Values.Data;
